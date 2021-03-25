@@ -21,13 +21,13 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/ethdb/memorydb"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/shacoqian/go-ethereum/common"
+	"github.com/shacoqian/go-ethereum/core/rawdb"
+	"github.com/shacoqian/go-ethereum/crypto"
+	"github.com/shacoqian/go-ethereum/ethdb"
+	"github.com/shacoqian/go-ethereum/ethdb/memorydb"
+	"github.com/shacoqian/go-ethereum/rlp"
+	"github.com/shacoqian/go-ethereum/trie"
 )
 
 // testAccount is the data associated with an account used by the state tests.

@@ -20,16 +20,16 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/shacoqian/go-ethereum/common"
+	"github.com/shacoqian/go-ethereum/core"
+	"github.com/shacoqian/go-ethereum/core/state"
+	"github.com/shacoqian/go-ethereum/light"
+	"github.com/shacoqian/go-ethereum/log"
+	"github.com/shacoqian/go-ethereum/p2p"
+	"github.com/shacoqian/go-ethereum/p2p/enode"
+	"github.com/shacoqian/go-ethereum/p2p/enr"
+	"github.com/shacoqian/go-ethereum/rlp"
+	"github.com/shacoqian/go-ethereum/trie"
 )
 
 const (

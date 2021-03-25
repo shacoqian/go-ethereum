@@ -22,9 +22,9 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/event"
+	"github.com/shacoqian/go-ethereum/common"
+	"github.com/shacoqian/go-ethereum/core/types"
+	"github.com/shacoqian/go-ethereum/event"
 	"golang.org/x/crypto/sha3"
 )
 

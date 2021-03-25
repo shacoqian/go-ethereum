@@ -27,17 +27,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/tests"
+	"github.com/shacoqian/go-ethereum/common"
+	"github.com/shacoqian/go-ethereum/common/hexutil"
+	"github.com/shacoqian/go-ethereum/common/math"
+	"github.com/shacoqian/go-ethereum/core"
+	"github.com/shacoqian/go-ethereum/core/rawdb"
+	"github.com/shacoqian/go-ethereum/core/types"
+	"github.com/shacoqian/go-ethereum/core/vm"
+	"github.com/shacoqian/go-ethereum/crypto"
+	"github.com/shacoqian/go-ethereum/params"
+	"github.com/shacoqian/go-ethereum/rlp"
+	"github.com/shacoqian/go-ethereum/tests"
 )
 
 // To generate a new callTracer test, copy paste the makeTest method below into

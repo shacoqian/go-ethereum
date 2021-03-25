@@ -1,4 +1,4 @@
-module github.com/ethereum/go-ethereum
+module github.com/shacoqian/go-ethereum
 
 go 1.15
 
@@ -33,6 +33,7 @@ require (
 	github.com/holiman/uint256 v1.1.1
 	github.com/huin/goupnp v1.0.1-0.20210310174557-0ca763054c88
 	github.com/influxdata/influxdb v1.8.3
+	github.com/ipsn/go-secp256k1 v0.0.0-20180726113642-9d62b9f0bc52
 	github.com/jackpal/go-nat-pmp v1.0.2-0.20160603034137-1fa385a6f458
 	github.com/jedisct1/go-minisign v0.0.0-20190909160543-45766022959e
 	github.com/julienschmidt/httprouter v1.2.0

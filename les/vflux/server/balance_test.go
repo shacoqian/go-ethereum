@@ -23,12 +23,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/ethdb/memorydb"
-	"github.com/ethereum/go-ethereum/les/utils"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/nodestate"
+	"github.com/shacoqian/go-ethereum/common/mclock"
+	"github.com/shacoqian/go-ethereum/ethdb/memorydb"
+	"github.com/shacoqian/go-ethereum/les/utils"
+	"github.com/shacoqian/go-ethereum/p2p/enode"
+	"github.com/shacoqian/go-ethereum/p2p/enr"
+	"github.com/shacoqian/go-ethereum/p2p/nodestate"
 )
 
 var (
