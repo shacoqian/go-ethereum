@@ -317,11 +317,15 @@ func (tx *Transaction) To() *common.Address {
 
 // Cost returns (gas * gasPrice) + (blobGas * blobGasPrice) + value.
 func (tx *Transaction) Cost() *big.Int {
-	total := new(big.Int).Mul(tx.GasPrice(), new(big.Int).SetUint64(tx.Gas()))
-	if tx.Type() == BlobTxType {
-		total.Add(total, new(big.Int).Mul(tx.BlobGasFeeCap(), new(big.Int).SetUint64(tx.BlobGas())))
+	// Avoid allocating copies via tx.GasPrice()/tx.Value(); use inner values directly.
+	total := new(big.Int).SetUint64(tx.inner.gas())
+	total.Mul(total, tx.inner.gasPrice())
+	if blobtx, ok := tx.inner.(*BlobTx); ok {
+		tmp := new(big.Int).SetUint64(blobtx.blobGas())
+		tmp.Mul(tmp, blobtx.BlobFeeCap.ToBig())
+		total.Add(total, tmp)
 	}
-	total.Add(total, tx.Value())
+	total.Add(total, tx.inner.value())
 	return total
 }
 
@@ -368,7 +372,7 @@ func (tx *Transaction) EffectiveGasTip(baseFee *big.Int) (*big.Int, error) {
 }
 
 // calcEffectiveGasTip calculates the effective gas tip of the transaction and
-// saves the result to dst.
+// saves the result to dst. On error, dst is undefined.
 func (tx *Transaction) calcEffectiveGasTip(dst *uint256.Int, baseFee *uint256.Int) error {
 	if baseFee == nil {
 		if dst.SetFromBig(tx.inner.gasTipCap()) {
@@ -376,15 +380,12 @@ func (tx *Transaction) calcEffectiveGasTip(dst *uint256.Int, baseFee *uint256.In
 		}
 		return nil
 	}
-
-	var err error
 	if dst.SetFromBig(tx.inner.gasFeeCap()) {
 		return ErrUint256Overflow
 	}
 	if dst.Cmp(baseFee) < 0 {
-		err = ErrGasFeeCapTooLow
+		return ErrGasFeeCapTooLow
 	}
-
 	dst.Sub(dst, baseFee)
 	gasTipCap := new(uint256.Int)
 	if gasTipCap.SetFromBig(tx.inner.gasTipCap()) {
@@ -393,7 +394,25 @@ func (tx *Transaction) calcEffectiveGasTip(dst *uint256.Int, baseFee *uint256.In
 	if gasTipCap.Cmp(dst) < 0 {
 		dst.Set(gasTipCap)
 	}
-	return err
+	return nil
+}
+
+// EffectiveGasTipValue returns the effective gasTip value for the given base fee,
+// even if it would be negative. This can be used for sorting purposes.
+func (tx *Transaction) EffectiveGasTipValue(baseFee *big.Int) *big.Int {
+	// min(gasTipCap, gasFeeCap - baseFee)
+	dst := new(big.Int)
+	if baseFee == nil {
+		dst.Set(tx.inner.gasTipCap())
+		return dst
+	}
+
+	dst.Sub(tx.inner.gasFeeCap(), baseFee) // gasFeeCap - baseFee
+	gasTipCap := tx.inner.gasTipCap()
+	if gasTipCap.Cmp(dst) < 0 { // gasTipCap < (gasFeeCap - baseFee)
+		dst.Set(gasTipCap)
+	}
+	return dst
 }
 
 func (tx *Transaction) EffectiveGasTipCmp(other *Transaction, baseFee *uint256.Int) int {
@@ -402,8 +421,13 @@ func (tx *Transaction) EffectiveGasTipCmp(other *Transaction, baseFee *uint256.I
 	}
 	// Use more efficient internal method.
 	txTip, otherTip := new(uint256.Int), new(uint256.Int)
-	tx.calcEffectiveGasTip(txTip, baseFee)
-	other.calcEffectiveGasTip(otherTip, baseFee)
+	err1 := tx.calcEffectiveGasTip(txTip, baseFee)
+	err2 := other.calcEffectiveGasTip(otherTip, baseFee)
+	if err1 != nil || err2 != nil {
+		// fall back to big int comparison in case of error
+		base := baseFee.ToBig()
+		return tx.EffectiveGasTipValue(base).Cmp(other.EffectiveGasTipValue(base))
+	}
 	return txTip.Cmp(otherTip)
 }
 
@@ -413,7 +437,15 @@ func (tx *Transaction) EffectiveGasTipIntCmp(other *uint256.Int, baseFee *uint25
 		return tx.GasTipCapIntCmp(other.ToBig())
 	}
 	txTip := new(uint256.Int)
-	tx.calcEffectiveGasTip(txTip, baseFee)
+	if err := tx.calcEffectiveGasTip(txTip, baseFee); err != nil {
+		if err == ErrGasFeeCapTooLow {
+			// The fee cap is below the base fee: the effective tip is
+			// negative, below any uint256.
+			return -1
+		}
+		// fall back to big int comparison in case of error
+		return tx.EffectiveGasTipValue(baseFee.ToBig()).Cmp(other.ToBig())
+	}
 	return txTip.Cmp(other)
 }
 
